@@ -21,8 +21,9 @@ if (localStorage.getItem("carrito")) {
 }
 renderizarCarrito(carrito)
 
+const boton = document.getElementById("botonBuscador")
+boton.addEventListener("click", renderizarProductosFiltrados);
 let buscador = document.getElementById("buscador")
-buscador.addEventListener("input", renderizarProductosFiltrados)
 
 function renderizarProductosFiltrados(e) {
     let productosFiltrados = productos.filter(producto => producto.nombre.toLowerCase().includes(buscador.value.toLowerCase()))
@@ -32,7 +33,7 @@ function renderizarProductosFiltrados(e) {
 function renderizarProductos(arrayDeProductos) {
     contenedor.innerHTML = ""
 
-    // Tarjetas de productos en la web desde js 
+
     for (const producto of arrayDeProductos) {
         let tarjetaProducto = document.createElement("div")
         tarjetaProducto.className = "producto"
@@ -86,6 +87,10 @@ function renderizarCarrito(arrayDeProductos) {
         <p>${producto.unidades}u.</p>
         <p>${producto.subtotal}</p>
         </div>
+        <div>
+        <img id="${producto.id}" class="chg-quantity update-cart " src="img/ap.png">
+        <img id="${producto.id}" class="chg-quantity-2 update-cart" src="img/down.png">
+        <img id="${producto.id}" class="chg-quantity-3 update-cart" src="img/trash.png">
         `
     }
 
@@ -95,6 +100,60 @@ function renderizarCarrito(arrayDeProductos) {
     `
 }
 
+let add = document.getElementsByClassName("chg-quantity update-cart")
+    for (let a of add) {
+        a.addEventListener("click", agragarAlCarrito)
+    }
+    let remove = document.getElementsByClassName("chg-quantity-2 update-cart")
+    for (let b of remove) {
+        b.addEventListener("click", removeItem)
+    }
+    let removee = document.getElementsByClassName("chg-quantity-3 update-cart")
+    for (let b of removee) {
+        b.addEventListener("click", deleteItem)
+    }
+    /*               Eliminar Items del Carrito            */
+function deleteItem(e) {
+    let productoBuscado = productos.find(producto => producto.id == e.target.id)
+    let posicionDeProductoBuscado = carrito.findIndex(producto => producto.id == productoBuscado.id)
+
+            carrito[indexProduct].unidades = 0
+            carritoJSON = JSON.stringify(carrito)
+            localStorage.setItem("Carrito", carritoJSON)
+
+            carrito.splice(indexProduct, 1)
+            carritoJSON = JSON.stringify(carrito)
+            localStorage.setItem("Carrito", carritoJSON)
+
+    totalFinal = carrito.reduce((a, b) => a + b.subtotal, 0)
+    unidades = carrito.reduce((a, b) => a + b.unidades, 0)
+
+    renderizarCarro(carrito)
+    totalRender(carrito)
+}
+
+function removeItem(e) {
+
+    let productoBuscado = productos.find(producto => producto.id == e.target.id)
+    let indexProduct = carrito.findIndex(producto => producto.id == productoBuscado.id)
+    if (indexProduct != -1) {
+        if (carrito[indexProduct].unidades >= 2) {
+            carrito[indexProduct].unidades--
+            carritoJSON = JSON.stringify(carrito)
+            localStorage.setItem("Carrito", carritoJSON)
+        }
+        else {
+            carrito.splice(indexProduct, 1)
+            carritoJSON = JSON.stringify(carrito)
+            localStorage.setItem("Carrito", carritoJSON)
+        }
+    }
+    totalFinal = carrito.reduce((a, b) => a + b.subtotal, 0)
+    unidades = carrito.reduce((a, b) => a + b.unidades, 0)
+
+    renderizarCarro(carrito)
+    totalRender(carrito)
+}
 // funciones del boton Vaciar carrito
 
 let botonComprar = document.getElementById("vaciarCarrito")
