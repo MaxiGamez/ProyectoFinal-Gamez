@@ -76,6 +76,7 @@ function agragarAlCarrito(e) {
     localStorage.setItem("carrito", JSON.stringify(carrito))
     renderizarCarrito(carrito)
 }
+// funciones del carrito
 
 function renderizarCarrito(arrayDeProductos) {
     contenedorCarrito.innerHTML = ""
@@ -87,10 +88,16 @@ function renderizarCarrito(arrayDeProductos) {
         <p>${producto.unidades}u.</p>
         <p>${producto.subtotal}</p>
         </div>
+        
         <div>
         <img id="${producto.id}" class="chg-quantity update-cart " src="img/ap.png">
+        </div>
+        <div>
         <img id="${producto.id}" class="chg-quantity-2 update-cart" src="img/down.png">
+        </div>
+        <div>
         <img id="${producto.id}" class="chg-quantity-3 update-cart" src="img/trash.png">
+        </div>
         `
     }
 
@@ -98,9 +105,7 @@ function renderizarCarrito(arrayDeProductos) {
     contenedorCarrito.innerHTML += `
     <h3> Total $${total}</h3>
     `
-}
-
-let add = document.getElementsByClassName("chg-quantity update-cart")
+    let add = document.getElementsByClassName("chg-quantity update-cart")
     for (let a of add) {
         a.addEventListener("click", agragarAlCarrito)
     }
@@ -109,41 +114,47 @@ let add = document.getElementsByClassName("chg-quantity update-cart")
         b.addEventListener("click", removeItem)
     }
     let removee = document.getElementsByClassName("chg-quantity-3 update-cart")
-    for (let b of removee) {
-        b.addEventListener("click", deleteItem)
+    for (let c of removee) {
+        c.addEventListener("click", deleteItem)
     }
-    /*               Eliminar Items del Carrito            */
+}
+
+/*               Eliminar Items del Carrito            */
 function deleteItem(e) {
     let productoBuscado = productos.find(producto => producto.id == e.target.id)
     let posicionDeProductoBuscado = carrito.findIndex(producto => producto.id == productoBuscado.id)
 
-            carrito[indexProduct].unidades = 0
-            carritoJSON = JSON.stringify(carrito)
-            localStorage.setItem("Carrito", carritoJSON)
+    carrito[posicionDeProductoBuscado].unidades = 0
+    carrito[posicionDeProductoBuscado].subtotal = carrito[posicionDeProductoBuscado].
+        unidades * carrito[posicionDeProductoBuscado].precioUnitario
+    carritoJSON = JSON.stringify(carrito)
+    localStorage.setItem("Carrito", carritoJSON)
 
-            carrito.splice(indexProduct, 1)
-            carritoJSON = JSON.stringify(carrito)
-            localStorage.setItem("Carrito", carritoJSON)
+    carrito.splice(posicionDeProductoBuscado, 1)
+    carritoJSON = JSON.stringify(carrito)
+    localStorage.setItem("Carrito", carritoJSON)
 
     totalFinal = carrito.reduce((a, b) => a + b.subtotal, 0)
     unidades = carrito.reduce((a, b) => a + b.unidades, 0)
 
-    renderizarCarro(carrito)
-    totalRender(carrito)
+    localStorage.setItem("carrito", JSON.stringify(carrito))
+    renderizarCarrito(carrito)
 }
 
 function removeItem(e) {
 
     let productoBuscado = productos.find(producto => producto.id == e.target.id)
-    let indexProduct = carrito.findIndex(producto => producto.id == productoBuscado.id)
-    if (indexProduct != -1) {
-        if (carrito[indexProduct].unidades >= 2) {
-            carrito[indexProduct].unidades--
+    let posicionDeProductoBuscado = carrito.findIndex(producto => producto.id == productoBuscado.id)
+    if (posicionDeProductoBuscado != -1) {
+        if (carrito[posicionDeProductoBuscado].unidades >= 2) {
+            carrito[posicionDeProductoBuscado].unidades--
+            carrito[posicionDeProductoBuscado].subtotal = carrito[posicionDeProductoBuscado].
+                unidades * carrito[posicionDeProductoBuscado].precioUnitario
             carritoJSON = JSON.stringify(carrito)
             localStorage.setItem("Carrito", carritoJSON)
         }
         else {
-            carrito.splice(indexProduct, 1)
+            carrito.splice(posicionDeProductoBuscado, 1)
             carritoJSON = JSON.stringify(carrito)
             localStorage.setItem("Carrito", carritoJSON)
         }
@@ -151,8 +162,8 @@ function removeItem(e) {
     totalFinal = carrito.reduce((a, b) => a + b.subtotal, 0)
     unidades = carrito.reduce((a, b) => a + b.unidades, 0)
 
-    renderizarCarro(carrito)
-    totalRender(carrito)
+    localStorage.setItem("carrito", JSON.stringify(carrito))
+    renderizarCarrito(carrito)
 }
 // funciones del boton Vaciar carrito
 
