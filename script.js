@@ -6,14 +6,12 @@ let productos = [
     { id: 4, nombre: "Tostadas con semillas", peso: 150, stock: 100, precio: 220, imgUrl: "./img/tostadas-semillas2.jpeg" },
 ]
 
-let productosString = JSON.stringify(productos)
-localStorage.setItem("productos", productosString)
-
 let contenedorCarrito = document.getElementById("contenedorCarrito")
-
+let contenedorTotal = document.getElementById("contenedor-total")
 let contenedor = document.getElementById("contenedorProductos")
 renderizarProductos(productos)
 let carrito = []
+
 //Renderiza productos del carrito 
 
 if (localStorage.getItem("carrito")) {
@@ -31,6 +29,8 @@ function renderizarProductosFiltrados(e) {
 
 }
 function renderizarProductos(arrayDeProductos) {
+    contenedorProductos.className = "container"
+    contenedorTotal.className = "hidden"
     contenedor.innerHTML = ""
 
 
@@ -38,25 +38,31 @@ function renderizarProductos(arrayDeProductos) {
         let tarjetaProducto = document.createElement("div")
         tarjetaProducto.className = "producto"
         tarjetaProducto.id = producto.id
-
         tarjetaProducto.innerHTML = `
-    <h3>${producto.nombre}</h3>
-    <p>Peso neto${producto.peso} gr.</p>
-    <p>Quedan${producto.stock} u.</p>
-    <p>Cuesta$${producto.precio}</p>
-    <img src=${producto.imgUrl}>
-    <button class="boton" id=${producto.id}>Añadir al carrito</button>
+        <div class="card" style="width: 15rem;">
+            <img src="${producto.imgUrl}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">${producto.nombre}</h5>
+                    <p class="card-text">Peso neto${producto.peso} gr.</p>
+                    <p class="card-text">Quedan${producto.stock} u.</p>
+                    <p class="card-text">Cuesta <strong>$${producto.precio}</strong></p>
+                    <p class="card-text"></p>
+                    <a id=${producto.id} href="#" type="button" class= "boton btn btn-primary" >Agregar al Carrito</a>
+                </div>
+        </div>
+            
     `
         contenedor.appendChild(tarjetaProducto)
     }
 
-    let botones = document.getElementsByClassName("boton")
+    let botones = document.getElementsByClassName("boton btn btn-primary")
     for (const boton of botones) {
         boton.addEventListener("click", agragarAlCarrito)
     }
 }
 
-// Tarjeta del carrito en la web desde js
+// Funcion agregar al carrito
+
 function agragarAlCarrito(e) {
     let productoBuscado = productos.find(producto => producto.id == e.target.id)
     let posicionDeProductoBuscado = carrito.findIndex(producto => producto.id ==
@@ -75,29 +81,37 @@ function agragarAlCarrito(e) {
     }
     localStorage.setItem("carrito", JSON.stringify(carrito))
     renderizarCarrito(carrito)
+    tostada("Producto agregado al carrito", {
+        background: "linear-gradient(to right, #00b09b, #96c93d)",
+    })
 }
-// funciones del carrito
+
+// funciones de renderizar array de productos
 
 function renderizarCarrito(arrayDeProductos) {
     contenedorCarrito.innerHTML = ""
     for (const producto of arrayDeProductos) {
         contenedorCarrito.innerHTML += `
-        <div class="flex">
-        <p>${producto.nombre}</p>
-        <p>$${producto.precioUnitario}</p>
-        <p>${producto.unidades}u.</p>
-        <p>${producto.subtotal}</p>
+        <div class="contenedor-carrito">
+            <div class="flex">
+                <p>${producto.nombre}</p>
+                <p>$${producto.precioUnitario}</p>
+                <p>${producto.unidades}u.</p>
+                <p>${producto.subtotal}</p>
+            </div>
+            <div class="boton-carrito">
+                <div class="img-carrito">
+                <img id="${producto.id}" class="chg-quantity update-cart " src="img/ap.png">
+                </div>
+                <div class="img-carrito">
+                <img id="${producto.id}" class="chg-quantity-2 update-cart" src="img/down.png">
+                </div>
+                <div class="img-carrito">
+                <img id="${producto.id}" class="chg-quantity-3 update-cart" src="img/trash.png">
+                </div>
+            </div>
         </div>
-        
-        <div>
-        <img id="${producto.id}" class="chg-quantity update-cart " src="img/ap.png">
-        </div>
-        <div>
-        <img id="${producto.id}" class="chg-quantity-2 update-cart" src="img/down.png">
-        </div>
-        <div>
-        <img id="${producto.id}" class="chg-quantity-3 update-cart" src="img/trash.png">
-        </div>
+    
         `
     }
 
@@ -120,6 +134,7 @@ function renderizarCarrito(arrayDeProductos) {
 }
 
 /*               Eliminar Items del Carrito            */
+
 function deleteItem(e) {
     let productoBuscado = productos.find(producto => producto.id == e.target.id)
     let posicionDeProductoBuscado = carrito.findIndex(producto => producto.id == productoBuscado.id)
@@ -164,13 +179,56 @@ function removeItem(e) {
 
     localStorage.setItem("carrito", JSON.stringify(carrito))
     renderizarCarrito(carrito)
+    tostada("Producto eliminado del carrito", {
+        background: "linear-gradient(to right,  #e92424,  #da5353)",
+    })
+
 }
 // funciones del boton Vaciar carrito
 
 let botonComprar = document.getElementById("vaciarCarrito")
 botonComprar.addEventListener("click", () => {
-    localStorage.removeItem("carrito")
+    localStorage.removeItem("Carrito")
     carrito = []
+
+    Swal.fire({
+        title: '<strong>Gracias por su compra!</strong>',
+        imageHeight: 100,
+        imageAlt: 'logo',
+        icon: "success",
+        showConfirmButton: false,
+        backdrop: `rgba(193, 188, 190, 0.65)`,
+        timer: 2500,
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+        }
+    })
+
     renderizarCarrito([])
 })
 
+/*                 Alerts                      */
+
+function tostada(text, style) {
+    Toastify({
+        text: text,
+        style: style,
+        duration: 1000,
+        gravity: "bottom",
+        position: "right",
+    }).showToast();
+}
+
+/*  ocultar mostrar       */
+
+function esconder(e) {
+    contenedorProductos.className = "hidden"
+    contenedorTotal.className = "container"
+}
+function mostrarRender() {
+    renderizar(productos)
+    contenedorTotal.className = "hidden"
+}
