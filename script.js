@@ -79,7 +79,7 @@ function miPagina(productos) {
             tarjetaProducto.className = "producto"
             tarjetaProducto.id = producto.id
             tarjetaProducto.innerHTML = `
-            <div class="card" style="width: 15rem;">
+            <div class="card" style="width: 20rem;">
                 <img src="${producto.imgUrl}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">${producto.nombre}</h5>
