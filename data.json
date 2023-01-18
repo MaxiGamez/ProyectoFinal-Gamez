@@ -1,0 +1,29 @@
+[
+ { "id": 1,
+   "nombre": "Pan Rallado Chico",
+   "peso": 500,
+   "stock": 100,
+   "precio": 390,
+   "imgUrl": "./img/pan-rallado2.jpeg"},
+
+ { "id": 2,
+   "nombre": "Pan Rallado Grande",
+   "peso": 3000,
+   "stock": 50,
+   "precio": 3250,
+   "imgUrl": "./img/pan-rallado2.jpeg" },
+
+ { "id": 3,
+   "nombre": "Tostadas",
+   "peso": 150,
+   "stock": 100,
+   "precio": 205,
+   "imgUrl": "./img/tostadas2.jpeg" },
+
+ { "id": 4,
+   "nombre": "Tostadas con semillas",
+   "peso": 150,
+   "stock": 100,
+   "precio": 220,
+   "imgUrl": "./img/tostadas-semillas2.jpeg" }
+]
